@@ -1,6 +1,7 @@
 """
 VGG
 """
+import torch
 from torch import nn
 
 from init_weight import init_weights_
@@ -147,46 +148,47 @@ class VGGALayerNorm(nn.Module):
     224x224x3
     """
 
-    def __init__(self, inp_ch=3, num_classes=10, init_weights=True):
+    def __init__(self, shape, inp_ch=3, num_classes=10, init_weights=True):
         super().__init__()
+        self.shape = shape
 
         self.features = nn.Sequential(
             # stage 1
             nn.Conv2d(in_channels=inp_ch, out_channels=64, kernel_size=3, padding=1),
-            nn.BatchNorm2d(64),
+            nn.LayerNorm([64] + list(self.shape[1:])),
             nn.ReLU(True),
             nn.MaxPool2d(kernel_size=2, stride=2),
 
             # stage 2
             nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, padding=1),
-            nn.BatchNorm2d(128),
+            nn.LayerNorm([128, self.shape[1] // 2, self.shape[2] // 2]),
             nn.ReLU(True),
             nn.MaxPool2d(kernel_size=2, stride=2),
 
             #stage 3
             nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, padding=1),
-            nn.BatchNorm2d(256),
+            nn.LayerNorm([256, self.shape[1] // 4, self.shape[2] // 4]),
             nn.ReLU(True),
             nn.Conv2d(in_channels=256, out_channels=256, kernel_size=3, padding=1),
-            nn.BatchNorm2d(256),
+            nn.LayerNorm([256, self.shape[1] // 4, self.shape[2] // 4]),
             nn.ReLU(True),
             nn.MaxPool2d(kernel_size=2, stride=2),
 
             # stage 4
             nn.Conv2d(in_channels=256, out_channels=512, kernel_size=3, padding=1),
-            nn.BatchNorm2d(512),
+            nn.LayerNorm([512, self.shape[1] // 8, self.shape[2] // 8]),
             nn.ReLU(True),
             nn.Conv2d(in_channels=512, out_channels=512, kernel_size=3, padding=1),
-            nn.BatchNorm2d(512),
+            nn.LayerNorm([512, self.shape[1] // 8, self.shape[2] // 8]),
             nn.ReLU(True),
             nn.MaxPool2d(kernel_size=2, stride=2),
 
             # stage5
             nn.Conv2d(in_channels=512, out_channels=512, kernel_size=3, padding=1),
-            nn.BatchNorm2d(512),
+            nn.LayerNorm([512, self.shape[1] // 16, self.shape[2] // 16]),
             nn.ReLU(True),
             nn.Conv2d(in_channels=512, out_channels=512, kernel_size=3, padding=1),
-            nn.BatchNorm2d(512),
+            nn.LayerNorm([512, self.shape[1] // 16, self.shape[2] // 16]),
             nn.ReLU(True),
             nn.MaxPool2d(kernel_size=2, stride=2))
 
