@@ -5,6 +5,7 @@ This project explores how LayerNorm help with Transformer training and if it pro
 Dataset used: IWSLT German-English
 
 link: http://phontron.com/data/iwslt-en-de-preprocessed.tar.gz
+
 To start training you need to download and uncompress the dataset first
 
 VGG part based on implementation by AlexeyGB@github, link to repo:
